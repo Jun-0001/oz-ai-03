@@ -1,0 +1,34 @@
+# # 다수의 컨테이너를 실행 조작하는 파일
+# services:
+# # 직접 빌드
+#   api: 
+#     build: .
+#     ports:
+#       - "8000:8000"
+#     depends_on:
+#       - db
+
+# # hub에서 그냥 갖다 쓰기
+#   db:
+#     image: mysql:8.0
+#     environment:
+#       MYSQL_ROOT_PASSWORD: password
+#       MYSQL_DATABASE: app_db
+#     ports:
+#       - "33060:3306"
+
+services:
+  api:
+    build: .
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db
+
+  db:
+    image: mysql:8.0
+    environment:
+      MYSQL_ROOT_PASSWORD: password
+      MYSQL_DATABASE: app_db
+    ports:
+      - "33061:3306"

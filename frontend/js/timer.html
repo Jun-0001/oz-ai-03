@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <h1>Timer API</h1>
+
+    <button id="start">카운트 다운 시작</button>
+    <p id="time"></p>
+    <script>
+        // setTimeout: 일정 시간이 지난 뒤에 함수를 한 번 실행 
+        //setTimeout(() => alert("타임아웃이 종료되었습니다."), 3000);
+       
+        // setInterval(함수, 시간(ms)): 일정 시간마다 함수를 반복 실행
+        // setInterval(() => alert("3초가 경과되었습니다."), 3000)
+        const startBtn = document.querySelector("#start");
+        const timeEl = document.querySelector("#time");
+        
+        let timeLeft = 10;
+        let timerId = null;
+
+
+        // start 버튼에 eventListner를 추가한다?
+        startBtn.addEventListener("click", () => {
+            // 이미 등록된 타이머가 있으면, 무시. 종료
+            if (timerId !== null) return;
+            
+            // 버튼 비활성화 코드
+            startBtn.disabled = true;
+            timeEl.textContent = timeLeft;
+            // 1초마다 timeleft를 1초씩 깎는다
+            timerId = setInterval(() => { 
+                timeLeft --;
+                
+                //
+                if (timeLeft === 0) {
+                    // timeLeft=0인 경우, 타이머 중지
+                    timeEl.textContent = "타이머 종료!"
+                    // 타이머 즉시 멈춤
+                    clearInterval(timerId);
+                    timeLeft = 10; // 타이머 중지되는 순간 초기화
+                    timerId = null; // 다시 초기화 필요
+                    startBtn.disabled = false;
+
+                } else {
+                    // timeLeft>=0인 경우, 계속 진행
+                    timeEl.textContent = timeLeft;
+                }
+                
+            }, 1000);
+        });
+    </script>
+</body>
+</html>
+

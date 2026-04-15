@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css">
+
+    <style>
+        body {
+            margin: 0px;
+        }
+
+        a {
+            text-decoration: none;
+            color: black;
+        }
+
+        .navbar {
+            background-color: beige;
+            padding: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .navbar__logo {
+            font-size: 1.4rem;
+        }
+
+        .navbar__menu {
+            display: flex;
+            list-style: none;
+            padding: 0px;
+        }
+        
+        .navbar__menu li {
+            padding: 8px 12px;
+
+        }
+
+        .navbar__menu li:hover {
+            background-color: white;
+            border-radius: 8px;
+        }
+
+        .navbar__icons {
+            display: flex;
+            list-style: none;
+            padding: 0px;
+        }
+
+        .navbar__icons li {
+            padding: 8px 4px;
+        }
+
+        @media (max-width: 400px) {
+            .navbar {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .navbar__menu {
+                flex-direction: column;
+                width: 100%;
+                text-align: center;
+            }
+
+            .navbar__icons {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+
+    </style>
+
+</head>
+<body>
+
+    <!--  -->
+    <nav class="navbar">
+        <div class="navbar__log">
+            <a href="">
+                <i class="fa-brands fa-dev"></i>Jun-0001
+            </a>
+        </div>
+
+        <ul class="navbar__menu">
+            <li><a href="">About</a></li>
+            <li><a href="./resume.html">Resume</a></li>
+            <li><a href="">Gallery</a></li>
+        </ul>
+
+        <ul class="navbar__icons">
+            <li><i class="fa-brands fa-github"></i></li>
+            <li><i class="fa-brands fa-x-twitter"></i></li>
+
+        </ul>
+    </nav>
+</body>
+</html>

@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+
+    <p id="box">마우스를 올려봐</p>
+
+    <script>
+        
+
+        const box = document.querySelector("#box");
+
+        // 함수 굳이 정의
+        // function changeColorToOrange(){
+        //     box.style.color ="orange";
+
+        // };
+
+        // function changeColorToBlack(){
+        //     box.style.color ="black";
+        // };
+
+
+        // 함수 정의랑 실행 동시에 가능 / 
+        box.addEventListener("mouseover",  () => box.style.color ="orange");
+        box.addEventListener("mouseout",  () => box.style.color ="black");
+        
+        // changeColor(color)
+        
+        function changeColor(color) {
+            box.style.color = color;
+            console.log("색상이 변경되었습니다.")
+        }
+        
+        // 이렇게 하면 호출되자마자 색상이 바뀜. undefined로 받기 때문에 
+        //  () =>: 함수
+        // changeColor("orange"): 함수값 
+        // 함수만 전달해야하니까
+        box.addEventListener("mouseover",  () => changeColor("orange"));
+        box.addEventListener("mouseout",  () => changeColor("black"));
+
+
+    </script>
+    
+</body>
+</html>

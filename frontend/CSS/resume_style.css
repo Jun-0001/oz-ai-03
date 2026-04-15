@@ -1,0 +1,49 @@
+.contents{
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+
+    /* 부모 태그가 최소 화면 세로 길이의 100% 차지 */
+    min-height: 100vh;
+}
+header {
+    font-size: x-large;
+    font-weight: bold;
+    font-family: 'Times New Roman', Times, serif;
+    margin-top: 2rem;
+    margin-bottom: 1rem;
+}
+main {
+    font-size: medium;
+    margin-top: 1rem;
+    flex: 1;
+}
+footer {
+    font-size: x-small;
+    margin-bottom: 1.2rem;
+}
+
+.github-link {
+    color: gray;
+    font-size: small;
+    text-decoration: none;
+}
+
+.github-link:hover {
+    text-decoration: underline;
+}
+
+.korean-link {
+    position:absolute;
+    top: 10px;
+    right: 10px;
+    color: darkcyan;
+    font-size: small;
+}
+
+.contact-row {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    font-size: small;
+}

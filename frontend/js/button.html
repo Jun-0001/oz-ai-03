@@ -1,0 +1,68 @@
+<!-- <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <input type="text" class="name-input">
+    <button>확인</button>
+
+    <script>
+        const input = document.querySelector(".name-input")
+        const button = document.querySelector("button")
+
+        // Input tag에 사용자가 입력한 값을 출력하는 함수
+        function printInput() {
+            if (input.value.trim() === "") {
+                alert("입력값이 비어있습니닷.")
+            };
+
+            console.log(input.value);
+        }
+
+        // 버튼 요소에 대해 click 이벤트가 발생하면, printInput를 실행해줘
+        button.addEventListener("click", printInput)
+
+        // 프론트엔드 개발자로서 하는 일
+        // 1) 함수 정의
+        // 2) eventListenr 등록
+
+    </script>
+</body>
+</html> -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <input type="text" class="name-input">
+    <button>버튼 확인</button>
+
+    <script>
+
+        // 1. 요소 및 데이터 설정 
+        const input = document.querySelector(".name-input")
+        const button = document.querySelector("button")
+
+        // 2. 함수 정의
+        function printInput() {
+            if (input.value.trim()==="") {
+                alert("입력값이 비었습니닷")
+            };
+            console.log(input.value);
+        };
+
+        // 3. 함수 실행
+        button.addEventListener("click", printInput)
+
+    </script>
+
+    
+</body>
+</html>

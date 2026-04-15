@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DOM 조작 연습</title>
+</head>
+<body>
+    <h1 class="text">Hello</h1>
+    <button id="change">변경</button>
+
+    <script>
+        // 1. DOM 요소 선택
+        const h1 = document.querySelector(".text");
+        const button = document.querySelector("#change");
+        
+        // 2. 상태를 저장할 플래그(Flag) 변수
+        let isChanged = false;
+
+        // 3. 변경 함수 정의
+        function changeH1() {
+            if (!isChanged) {
+                // 변경 상태가 아닐 때 (기본 상태 -> 변경 상태)
+                h1.textContent = "Hello, JS";
+                h1.style.color = "red";
+            } else {
+                // 이미 변경된 상태일 때 (변경 상태 -> 기본 상태)
+                h1.textContent = "Hello";
+                h1.style.color = "black";
+            }
+            
+            // 상태 반전 (T -> F / F -> T)
+            isChanged = !isChanged;
+        }
+
+        // 4. 이벤트 리스너 등록 (함수 이름 뒤에 ()를 붙이지 않는 것이 핵심!)
+        button.addEventListener("click", changeH1);
+
+        /* [변경 로직 요약]
+            1. 버튼 클릭 시 changeH1 함수 실행
+            2. isChanged 값에 따라 h1의 텍스트와 색상 변경
+            3. 마지막에 isChanged 값을 반대로 뒤집어서 다음 클릭 때 반대로 동작하게 함
+        */
+    </script>
+</body>
+</html>

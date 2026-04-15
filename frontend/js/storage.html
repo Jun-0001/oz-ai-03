@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LocalStorage 실습</title>
+</head>
+<body>
+    <input type="text" id="name" placeholder="이름을 입력하세요">
+    
+    <button id="save">저장</button>
+    
+    <button id="reset">리셋</button> 
+    
+    <p id="result"></p>
+
+    <script>
+        const input = document.querySelector("#name");
+        const button = document.querySelector("#save");
+        const result = document.querySelector("#result");
+        
+        // 이제 HTML에 id="reset"이 생겼으므로 에러가 나지 않습니다.
+        const resetBtn = document.querySelector("#reset"); 
+        
+        // 1. 페이지 로드 시 저장된 이름 불러오기
+        const savedUser = localStorage.getItem("name");
+        if (savedUser) {
+            result.textContent = savedUser;
+        }
+
+        // 2. 저장 버튼 클릭 이벤트
+        button.addEventListener("click", () => {
+            if (input.value === "") return alert("이름을 입력해주세요!");
+            
+            localStorage.setItem("name", input.value);
+            result.textContent = input.value;
+            input.value = ""; // 입력창 초기화
+        });
+
+        // 3. 리셋 버튼 클릭 이벤트
+        resetBtn.addEventListener("click", () => {
+            localStorage.removeItem("name"); // 로컬스토리지 데이터 삭제
+            result.textContent = "";        // 화면 표시 삭제
+            input.value = "";               // 입력창 초기화
+            alert("저장된 데이터가 삭제되었습니다.");
+        });
+    </script>
+</body>
+</html>

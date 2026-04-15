@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=
+    , initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    
+    <input type="text" id="name-input" placeholder="이름 입력...">
+    <p id="preview"></p>
+
+    <script>
+        // 텍스트 입력, 입력 내용을 곧바로 preview로 보여주기
+        const input = document.querySelector("#name-input")
+        const preview = document.querySelector("#preview")
+
+        function previewInput() {
+            if (input.value.length <=3) {
+                preview.textContent = "비밀번호가 너무 짧습니다."
+                preview.style.color = "red";
+            } else {
+                preview.textContent = "사용가능한 비밀번호입니다.."
+                preview.style.color = "green";
+            }
+
+        };
+
+        // input event -> 사용자 인풋에 값을 입력 
+        input.addEventListener("input", previewInput);
+
+
+
+    </script>
+
+</body>
+</html>
