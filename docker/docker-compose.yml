@@ -1,29 +1,12 @@
-# # 다수의 컨테이너를 실행 조작하는 파일
-# services:
-# # 직접 빌드
-#   api: 
-#     build: .
-#     ports:
-#       - "8000:8000"
-#     depends_on:
-#       - db
-
-# # hub에서 그냥 갖다 쓰기
-#   db:
-#     image: mysql:8.0
-#     environment:
-#       MYSQL_ROOT_PASSWORD: password
-#       MYSQL_DATABASE: app_db
-#     ports:
-#       - "33060:3306"
-
 services:
   api:
-    build: .
+    build: ./api # build는 이미지 파일 만드는것. 해당 경로 안에서 dockerfile 찾아라
     ports:
       - "8000:8000"
     depends_on:
       - db
+    volumes:
+      - ./api:/app # 모든 코드가 컨테이너 동기화
 
   db:
     image: mysql:8.0
@@ -32,3 +15,13 @@ services:
       MYSQL_DATABASE: app_db
     ports:
       - "33061:3306"
+    volumes:
+      - local_db:/var/lib/mysql
+  workers:
+    build: ./worker
+    volumes:
+      - ./worker:/app
+
+volumes:
+  local_db:
+

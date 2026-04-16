@@ -12,3 +12,10 @@ __pycache__/
 
 # 운영체제 설정 파일
 .DS_Store
+
+models/
+*.gguf
+docker/mysql_data/
+docker/local_db/
+.env
+.vscode/
