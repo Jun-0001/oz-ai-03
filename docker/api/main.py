@@ -1,37 +1,107 @@
 import uuid
 import json
 
-from fastapi import FastAPI, Body
+from sqlalchemy import select
+from fastapi import FastAPI, Body, HTTPException
 from fastapi.responses import StreamingResponse
 from redis import asyncio as aredis
 
+
+from connection_async import AsyncSessionFactory
+from models import Conversation, Message
 
 # # redis://redis -> redis 프로토콜 사용:// IP 주소
 redis_client = aredis.from_url("redis://redis:6379", decode_responses=True)
 
 app = FastAPI()
 
-@app.post("/chats")
-async def generate_chat_handler(
-    user_input: str = Body(..., embed=True),
+# users
+@app.post(
+        "/conversations",
+        summary = "대화 시작 API"
+)
+async def create_conversation_handler():
+    async with AsyncSessionFactory() as session:
+        conversation = Conversation()
+        session.add(conversation)
+        await session.commit()
+        await session.refresh(conversation)
+    return conversation
+
+# 전체 메시지 조회 API
+@app.get(
+    "/conversations/{conversation_id}/messages",
+    summary="전체 메세지 조회 API"
+)
+async def get_messages_handler(
+    conversation_id: str
 ):
-    
-    # 2) Subscribe 채널 설정 (결과 받을 준비 중... 대기...)
-    # 비동기 작업. redis한테 나 지금 pubsub했다 알려줌
-    channel = str(uuid.uuid4())
-    pubsub = redis_client.pubsub()
-    await pubsub.subscribe(channel)
+    async with AsyncSessionFactory() as session:
+        stmt = (
+            select(Message)
+            .where(Message.conversation_id == conversation_id)
+            .order_by(Message.id.asc()))
+        result = await session.execute(stmt)
+        messages = result.scalars().all()
+    return messages
 
-    # 3) Queue를 통해 Worker에 Task를 전달 (enqueue)
-    # channel: 추론 결과 여기로 보내 / user_input: 요청 내용
-    # 파이썬과 redis는 다른 형식임. redis는 문자열로만 처리
-    # 데이터를 JSON으로 만들어야함
-    task = {"channel": channel, "user_input": user_input}
-    await redis_client.lpush("queue", json.dumps(task))
 
-    # 4) 채널 메시지 읽고 토큰 반환
-    # listen() -> 대기중... -> 언제 끊김? -> 강제로 끊어야함
-    async def event_generator():
+# 메세지 생성 시 꼭 conversation_id를 받아야함
+@app.post(
+        "/conversations/{conversation_id}/messages",
+        summary = "메세지 생성 API",
+)
+async def create_message_handler(
+    conversation_id: str, 
+    user_input: str = Body(..., embed = True),
+):
+    async with AsyncSessionFactory() as session:
+        # 대화방 확인
+        conversation = await session.get(Conversation, conversation_id)
+        if not conversation:
+            raise HTTPException(
+                status_code=404,
+                detail="Conversation Not Found"
+            )
+        
+        # 사용자 메시지 생성
+        user_msg = Message(
+            conversation_id=conversation.id,
+            role="user",
+            content=user_input,
+        )
+        session.add(user_msg)
+
+        # 이전 메시지 조회
+        stmt = (
+            select(Message)
+            .where(Message.conversation_id == conversation.id)
+            .order_by(Message.id.asc()) # id 기준 오름차순
+        )
+        result = await session.execute(stmt)
+        messages = result.scalars().all()
+        
+        # 1) 메시지 갯수가 10개 이상이면, 압축 및 요약
+        # 2) 대화 내역 중에 주제가 바뀌면, 이전 메시지는 무시
+        # 등등 내가 원하는 설정 코드로 추가 가능 
+        # 성능을 결정하는것은 모델 엔진 > 최적화 코드
+        
+        history = [{"role": m.role, "content": m.content} for m in messages]
+        
+        # 작업 내용을 Enqueue
+        channel = conversation.id
+        pubsub = redis_client.pubsub()
+        await pubsub.subscribe(channel)
+
+        task = {"channel": channel, "messages": history}
+        await redis_client.lpush("queue", json.dumps(task))
+
+        await session.commit() 
+        # 저장하는이유? 요청까지 보내고 나야 추론한 메시지까지 저장할 수 있음
+
+    # 응답 수신
+    async def event_listener():
+        assistant_text = ""
         async for message in pubsub.listen():
             if message["type"] != "message":
                 continue
@@ -40,13 +110,31 @@ async def generate_chat_handler(
             token = message["data"]
             if token == "[DONE]":
                 break
+
+            assistant_text += token
             yield token
         
+        # LLM 응답 메시지 저장
+        async with AsyncSessionFactory() as session:
+            assistant_msg = Message(
+                conversation_id=conversation_id,
+                role="assistant",
+                content=assistant_text
+            )
+            session.add(assistant_msg)
+            await session.commit()
+
+
         await pubsub.unsubscribe(channel)
         await pubsub.close()
 
-    # 5) 추론 결과 수신
+        # 5) 추론 결과 수신
     return StreamingResponse(
-        event_generator(),
+        event_listener(),
         media_type="text/event-stream",
-    )
+    ) 
+
+
+
+
+
