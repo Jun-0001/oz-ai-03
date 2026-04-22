@@ -1,0 +1,6 @@
+.env
+
+# db 무시
+*.sqlite
+*.sqlite3
+db.sqlite
